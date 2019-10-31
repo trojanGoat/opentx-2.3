@@ -1,2 +1,0 @@
-Date,Time,Fuel(%),Hdg(@),A2(V),AccX(g),AccY(g),AccZ(g),Tmp1(@C),RSSI(dB),RxBt(V),A4(V),VFAS(V),Curr(A),Rud,Ele,Thr,Ail,S1,6P,S2,LS,RS,SA,SB,SC,SD,SE,SF,SG,SH,LSW,TxBat(V)
-2018-04-02,20:54:35.960,0,0.00,0.0,0.00,0.00,0.00,0,0,0.0,0.00,0.00,0.0,-12,9,-1024,10,-381,204,-9,-1,1003,-1,-1,-1,-1,-1,-1,-1,-1,0x0000000000000020,7.5
