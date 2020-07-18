@@ -1,19 +1,16 @@
-
-LOCAL_SENSOR_ID  = 0x0D
-SMARTPORT_REMOTE_SENSOR_ID = 0x1B
-FPORT_REMOTE_SENSOR_ID = 0x00
-REQUEST_FRAME_ID = 0x30
-REPLY_FRAME_ID   = 0x32
+local LOCAL_SENSOR_ID  = 0x0D
+local SMARTPORT_REMOTE_SENSOR_ID = 0x1B
+local FPORT_REMOTE_SENSOR_ID = 0x00
+local REQUEST_FRAME_ID = 0x30
+local REPLY_FRAME_ID   = 0x32
 
 local lastSensorId, lastFrameId, lastDataId, lastValue
 
 protocol.mspSend = function(payload)
-    local dataId = 0
-    dataId = payload[1] + bit32.lshift(payload[2],8)
-    local value = 0
-    value = payload[3] + bit32.lshift(payload[4],8)
+    local dataId = payload[1] + bit32.lshift(payload[2],8)
+    local value = payload[3] + bit32.lshift(payload[4],8)
         + bit32.lshift(payload[5],16) + bit32.lshift(payload[6],24)
-    return sportTelemetryPush(LOCAL_SENSOR_ID, REQUEST_FRAME_ID, dataId, value)
+    return protocol.push(LOCAL_SENSOR_ID, REQUEST_FRAME_ID, dataId, value)
 end
 
 protocol.mspRead = function(cmd)
@@ -24,15 +21,14 @@ protocol.mspWrite = function(cmd, payload)
     return mspSendRequest(cmd, payload)
 end
 
---Discards duplicate data from lua input buffer
+-- Discards duplicate data from lua input buffer
 local function smartPortTelemetryPop()
-    local sensorId, frameId, dataId, value
     while true do
-        sensorId, frameId, dataId, value = sportTelemetryPop()
-        if sensorId == nil then
+        local sensorId, frameId, dataId, value = sportTelemetryPop()
+        if not sensorId then
             return nil
         elseif (lastSensorId == sensorId) and (lastFrameId == frameId) and (lastDataId == dataId) and (lastValue == value) then
-            --Keep checking
+            -- Keep checking
         else
             lastSensorId = sensorId
             lastFrameId = frameId

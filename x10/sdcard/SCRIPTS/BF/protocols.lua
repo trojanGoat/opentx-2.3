@@ -2,9 +2,8 @@ local supportedProtocols =
 {
     smartPort =
     {
-        transport       = SCRIPT_HOME.."/MSP/sp.lua",
+        transport       = "MSP/sp.lua",
         rssi            = function() return getValue("RSSI") end,
-        exitFunc        = function() return 0 end,
         stateSensor     = "Tmp1",
         push            = sportTelemetryPush,
         maxTxBufferSize = 6,
@@ -14,9 +13,8 @@ local supportedProtocols =
     },
     crsf =
     {
-        transport       = SCRIPT_HOME.."/MSP/crsf.lua",
+        transport       = "MSP/crsf.lua",
         rssi            = function() return getValue("TQly") end,
-        exitFunc        = function() return "/CROSSFIRE/crossfire.lua" end,
         stateSensor     = "1RSS",
         push            = crossfireTelemetryPush,
         maxTxBufferSize = 8,
@@ -26,18 +24,14 @@ local supportedProtocols =
     }
 }
 
-function getProtocol()
-    if supportedProtocols.smartPort.push() then
+local function getProtocol()
+    if supportedProtocols.smartPort.push() ~= nil then
         return supportedProtocols.smartPort
-    elseif supportedProtocols.crsf.push() then
+    elseif supportedProtocols.crsf.push() ~= nil then
         return supportedProtocols.crsf
     end
 end
 
-local protocol = getProtocol()
-
-if not protocol then
-    error("Telemetry protocol not supported!")
-end
+local protocol = assert(getProtocol(), "Telemetry protocol not supported!")
 
 return protocol
